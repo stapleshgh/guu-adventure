@@ -3,6 +3,7 @@ import fisica.*;
 FWorld world;
 PImage photo;
 FBox g;
+Nink nink;
 
 void setup() {
   size(400, 400);
@@ -19,6 +20,7 @@ void setup() {
   //bouncy edges
   //world.setEdgesRestitution(1);
   
+  nink = new Nink();
   
   photo = loadImage("cruelty-squad.gif");
   photo.resize(50, 50);
@@ -37,4 +39,5 @@ void draw() {
   image(photo, 200, 200);
   world.step();
   world.draw();
+  nink.drawNink();
 }
