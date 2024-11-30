@@ -24,7 +24,7 @@ class Platform extends FBox {
       frame = (frame + 1) % idle.length;
     }
 
-    idle[frame].resize(100, hei);
+    idle[frame].resize(wid, hei);
     attachImage(idle[frame]);
   }
 }

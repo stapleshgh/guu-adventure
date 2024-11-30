@@ -29,7 +29,7 @@ Platform platform;
 Star star;
 
 void setup() {
-  size(400, 400);
+  size(500, 500);
   imageMode(CORNER);
   rectMode(CENTER);
 
@@ -61,7 +61,13 @@ void setup() {
 
   //create platforms
   platform = new Platform(400, 300, 200, 50);
-  platforms.add(new Platform(300, 250, 200, 50));
+  platforms.add(new Platform(300, 400, 200, 50));
+  platforms.add(new Platform(500, 400, 200, 50));
+  platforms.add(new Platform(700, 400, 200, 50));
+  platforms.add(new Platform(900, 400, 200, 50));
+  platforms.add(new Platform(1100, 400, 200, 50));
+  platforms.add(new Platform(1300, 400, 200, 50));
+  platforms.add(new Platform(1600, 200, 200, 50));
   
 
   //init test nink ----------------------------------------------
@@ -71,7 +77,7 @@ void setup() {
   player = new Player(this);
   
   //create stars ---------------------------------------
-  star = new Star(300, 300);
+  star = new Star(900, 350);
 
   //music
   gameMusic = new SoundFile(this, "levelMusic.mp3");
@@ -89,11 +95,13 @@ void setup() {
 
 void draw() {
   background(255);
+  println(player.position);
 
   //menu screen
   if (gameState == 0) {
     imageMode(CENTER);
-    image(menu, 200, 200);
+    menu.resize(500, 500);
+    image(menu, 250, 250);
     if (!menuMusic.isPlaying()) {
       menuMusic.loop();
     }

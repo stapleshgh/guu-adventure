@@ -4,8 +4,10 @@ class Star extends FBox{
   
   
   Star(int x, int y) {
+    
     super(100, 100);
     setPosition(x, y);
+    imageMode(CORNER);
     
     //load animation frames
     idle = new PImage[2];
