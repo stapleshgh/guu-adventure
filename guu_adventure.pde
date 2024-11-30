@@ -2,14 +2,17 @@ import fisica.*;
 import processing.sound.*;
 
 //variable declaration --------------------------------------------
-int gameState = 3;
+int gameState = 0;
 FWorld world;
 PImage menu;
 PImage badEnd;
 PImage goodEnd;
+
+//music -------------------------
 SoundFile menuMusic;
 SoundFile badEndMusic;
 SoundFile goodEndMusic;
+SoundFile gameMusic;
 
 //create player object ------------------------
 Player player;
@@ -18,7 +21,12 @@ Player player;
 ArrayList<Nink> ninks;
 Nink nink;
 
+//create platforms --------------------------
+ArrayList<Platform> platforms;
 Platform platform;
+
+//create stars
+Star star;
 
 void setup() {
   size(400, 400);
@@ -29,6 +37,9 @@ void setup() {
   menu = loadImage("menuScreen.png");
   menuMusic = new SoundFile(this, "menuMusic.wav");
   menuMusic.amp(0.5);
+  
+  //initialize entity arrays
+  platforms = new ArrayList<Platform>();
 
   //load bad end assets
   badEnd = loadImage("badEnd.jpg");
@@ -40,23 +51,39 @@ void setup() {
 
 
 
-  //world init --------------------------------------------
+  //load world: initialize world properties --------------------------------------------
   world = new FWorld(-2000, -2000, 2000, 2000);
   world.setGravity(0, 900);
-  world.setEdges();
-  world.setEdgesFriction(20);
+  //world.setEdges();
+  //world.setEdgesFriction(20);
   world.remove(world.top);
   world.remove(world.right);
 
-  platform = new Platform(400, 300, 1200, 20);
+  //create platforms
+  platform = new Platform(400, 300, 200, 50);
+  platforms.add(new Platform(300, 250, 200, 50));
+  
 
   //init test nink ----------------------------------------------
-  nink = new Nink();
-  player = new Player();
+  nink = new Nink(this);
+  
+  //create player----------------------------------------------
+  player = new Player(this);
+  
+  //create stars ---------------------------------------
+  star = new Star(300, 300);
 
+  //music
+  gameMusic = new SoundFile(this, "levelMusic.mp3");
+
+  //add to world
   world.add(nink);
   world.add(player);
-  world.add(platform);
+  world.add(star);
+  
+  for (Platform p : platforms) {
+    world.add(p);
+  }
 }
 
 
@@ -82,6 +109,7 @@ void draw() {
 
   //game loop
   if (gameState == 1) {
+    //draw world
     pushMatrix();
     translate(-player.getX() + width / 2, -player.getY() + height / 2);
     world.step();
@@ -89,11 +117,21 @@ void draw() {
 
     popMatrix();
 
-
+    //draw world entities
     nink.drawNink();
     player.drawPlayer();
     player.updatePlayer();
-    platform.drawPlatform();
+    star.drawStar();
+    
+    for (Platform p : platforms) {
+      p.drawPlatform();
+    }
+
+    
+    //music
+    if (!gameMusic.isPlaying()) {
+      gameMusic.loop();
+    }
   }
 
 

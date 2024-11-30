@@ -6,7 +6,7 @@ class Nink extends FBox{
   PVector position;
   int direction = 1;
   
-  Nink() {
+  Nink(PApplet p) {
     super(50, 90);
     frame = 0;
     imageMode(CORNER);

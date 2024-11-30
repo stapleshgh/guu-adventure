@@ -5,6 +5,10 @@ boolean left;
 boolean jump;
 
 class Player extends FBox {
+  //sound effects
+  SoundFile fart;
+  SoundFile walk;
+  
   //animaton arrays / sprites
   PImage guuWalkRight[];
   PImage guuWalkLeft[];
@@ -20,10 +24,14 @@ class Player extends FBox {
   int frame;
   PVector position;
 
-  Player() {
+  Player(PApplet p) {
     //invoke parent constructor
     super(50, 100);
     imageMode(CORNER);
+    
+    //sound effects init
+    fart = new SoundFile(p, "fart.mp3");
+    walk = new SoundFile(p, "walkSound.mp3");
 
     //creating animation arrays
     guuWalkRight = new PImage[7];
@@ -55,6 +63,7 @@ class Player extends FBox {
 //draw function
   void drawPlayer() {
     
+    //movement + animation code
     if (right && getVelocityY() == 0) {
       //animation loop. changes frame every 4 frames
       if (frameCount % 4 == 0) {
@@ -82,6 +91,14 @@ class Player extends FBox {
       attachImage(guuIdle);
       guuIdle.resize(100, 100);
     }
+    
+    
+    if ((right || left)&& !walk.isPlaying()) {
+      walk.loop();
+    }
+    if (!right && !left) {
+      walk.pause();
+    }
   }
 
   //update function
@@ -89,14 +106,15 @@ class Player extends FBox {
 
     //jump code. check if player is touching ground
     if (jump && getVelocityY() == 0) {
-      addImpulse(0, -10000);
+      addImpulse(0, -9000);
+      fart.play();
     }
 
     //move right if key pressed
-    if (right) {
-      setVelocity(500, getVelocityY());
-    } else if (left) {
-      setVelocity(-500, getVelocityY());
+    if (right && getVelocityX() <= 500) {
+      setVelocity(getVelocityX() + 50, getVelocityY());
+    } else if (left && getVelocityX() >= -500) {
+      setVelocity(getVelocityX() - 50, getVelocityY());
     } else {
       //apply air friction if neither key is being pressed and velocity isnt zero
       if (getVelocityX() >= 0) {

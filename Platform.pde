@@ -10,6 +10,7 @@ class Platform extends FBox {
     setPosition(x, y);
     setStatic(true);
     setFriction(18);
+    setGrabbable(false);
     wid = w;
     hei = h;
 
