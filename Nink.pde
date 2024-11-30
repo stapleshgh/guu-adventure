@@ -7,11 +7,15 @@ class Nink extends FBox{
   int direction = 1;
   
   Nink() {
-    super(50, 50);
+    super(50, 90);
     frame = 0;
-    imageMode(CENTER);
+    imageMode(CORNER);
     ninkWalk = new PImage[8];
     setPosition(200, 200);
+    setRotatable(false);
+    setGrabbable(false);
+    setName("Nink");
+    
     
     for (int i = 0; i < ninkWalk.length; i++) {
       ninkWalk[i] = loadImage("ninkWalk (" + (i + 1) + ").png");
@@ -25,7 +29,7 @@ class Nink extends FBox{
       frame = (frame + 1) % ninkWalk.length;
     }
     
-    ninkWalk[frame].resize(50, 50);
+    ninkWalk[frame].resize(100, 100);
     attachImage(ninkWalk[frame]);
   }
   
