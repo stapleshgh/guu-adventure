@@ -6,6 +6,8 @@ class KillBox extends FBox {
     setPosition(x, y);
     setGrabbable(false);
     setRotatable(false);
+    setSensor(true);
+    setStatic(true);
     setName("killbox");
   }
 }

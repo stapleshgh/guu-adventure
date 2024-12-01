@@ -6,18 +6,21 @@ class Star extends FBox{
   Star(int x, int y) {
     
     super(100, 100);
-    setPosition(x, y);
     imageMode(CORNER);
+    
+    //set FBox properties
+    setName("Star");
+    setGrabbable(false);
+    setStatic(true);
+    setPosition(x, y);
+    setSensor(true);
+    
     
     //load animation frames
     idle = new PImage[2];
     idle[0] = loadImage("star1.png");
     idle[1] = loadImage("star2.png");
     
-    //set FBox properties
-    setName("Star");
-    setGrabbable(false);
-    setStatic(true);
     
   }
   

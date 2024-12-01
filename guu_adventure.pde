@@ -25,6 +25,9 @@ Nink nink;
 ArrayList<Platform> platforms;
 Platform platform;
 
+//killbox for void
+KillBox kb;
+
 //create stars
 Star star;
 
@@ -43,13 +46,13 @@ void setup() {
 
   //load bad end assets
   badEnd = loadImage("badEnd.jpg");
-  badEnd.resize(400, 400);
+  badEnd.resize(500, 500);
   badEndMusic = new SoundFile(this, "badEndMusic.mp3");
 
   //fisica initialization --------------------------------
   Fisica.init(this);
 
-
+  
 
   //load world: initialize world properties --------------------------------------------
   world = new FWorld(-2000, -2000, 2000, 2000);
@@ -61,6 +64,8 @@ void setup() {
 
   //create platforms
   platform = new Platform(400, 300, 200, 50);
+  platforms.add(new Platform(-200, 400, 200, 50));
+  platforms.add(new Platform(100, 400, 200, 50));
   platforms.add(new Platform(300, 400, 200, 50));
   platforms.add(new Platform(500, 400, 200, 50));
   platforms.add(new Platform(700, 400, 200, 50));
@@ -68,6 +73,9 @@ void setup() {
   platforms.add(new Platform(1100, 400, 200, 50));
   platforms.add(new Platform(1300, 400, 200, 50));
   platforms.add(new Platform(1600, 200, 200, 50));
+  
+  //init void killbox
+  kb = new KillBox(-1200, 1000, 24000, 50);
   
 
   //init test nink ----------------------------------------------
@@ -86,6 +94,7 @@ void setup() {
   world.add(nink);
   world.add(player);
   world.add(star);
+  world.add(kb);
   
   for (Platform p : platforms) {
     world.add(p);
@@ -117,6 +126,9 @@ void draw() {
 
   //game loop
   if (gameState == 1) {
+    //check for game over
+    checkGameOver();
+    
     //draw world
     pushMatrix();
     translate(-player.getX() + width / 2, -player.getY() + height / 2);
@@ -150,6 +162,7 @@ void draw() {
 
   //you lose! screen
   if (gameState == 3) {
+    gameMusic.pause();
     imageMode(CENTER);
     image(badEnd, 200, 200);
     if (!badEndMusic.isPlaying()) {
@@ -163,5 +176,11 @@ void draw() {
       gameState = 0;
       imageMode(CORNER);
     }
+  }
+}
+
+void checkGameOver() {
+  if (player.lives <= 0) {
+    gameState = 3;
   }
 }

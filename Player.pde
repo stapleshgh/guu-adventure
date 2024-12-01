@@ -8,17 +8,21 @@ class Player extends FBox {
   //sound effects
   SoundFile fart;
   SoundFile walk;
+  SoundFile die;
 
   //animaton arrays / sprites
   PImage guuWalkRight[];
   PImage guuWalkLeft[];
-  PImage guuDie[];
+  PImage guuDieRight;
+  PImage guuDieLeft;
   PImage guuIdle;
   PImage jumpRight;
   PImage jumpLeft;
+  PImage lifeCounter;
 
   //player variables
   int lives = 3;
+  int score = 0;
 
   boolean isWalking;
   int frame;
@@ -32,6 +36,7 @@ class Player extends FBox {
     //sound effects init
     fart = new SoundFile(p, "fart.mp3");
     walk = new SoundFile(p, "walkSound.mp3");
+    die = new SoundFile(p, "guuDie.mp3");
 
     //creating animation arrays
     guuWalkRight = new PImage[7];
@@ -55,8 +60,12 @@ class Player extends FBox {
 
     //load idle sprites
     guuIdle = loadImage("guuWalk1.png");
+    guuDieRight = loadImage("guuWalk10.png");
+    guuDieLeft = loadImage("guuWalk20.png");
     jumpRight = loadImage("guuWalk9.png");
     jumpLeft = loadImage("guuWalk19.png");
+    lifeCounter = loadImage("life-token.png");
+    lifeCounter.resize(50, 50);
   }
 
 
@@ -89,14 +98,12 @@ class Player extends FBox {
       attachImage(guuIdle);
       guuIdle.resize(100, 100);
     }
-
-
-    if ((right || left)&& !walk.isPlaying()) {
-      walk.loop();
+    
+    for (int i = 0; i < lives; i ++) {
+      image(lifeCounter, 0 + (i * 50), 0);
     }
-    if (!right && !left) {
-      walk.pause();
-    }
+
+    
   }
 
   //update function
@@ -124,6 +131,14 @@ class Player extends FBox {
       }
     }
     
+    //play bongo loop if moving
+    if ((right || left)&& !walk.isPlaying()) {
+      walk.loop();
+    }
+    if ((!right && !left)&& walk.isPlaying()) {
+      walk.pause();
+    }
+    
   }
   
   void checkContacts() {
@@ -132,6 +147,13 @@ class Player extends FBox {
     for (FContact contact: contactList) {
       if (contact.contains("Nink")) {
         setPosition(0, 0);
+      }
+      if (contact.contains("killbox")) {
+        if (!die.isPlaying()) {
+          die.play();
+        }
+        setPosition(0, 0);
+        lives -=1;
       }
     }
   }
