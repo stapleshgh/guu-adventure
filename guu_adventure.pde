@@ -164,16 +164,17 @@ void draw() {
   if (gameState == 3) {
     gameMusic.pause();
     imageMode(CENTER);
-    image(badEnd, 200, 200);
+    badEnd.resize(500,  500);
+    image(badEnd, 250, 250);
     if (!badEndMusic.isPlaying()) {
       badEndMusic.loop();
     }
 
     if (keyPressed) {
-      //unload music
       badEndMusic.pause();
-      badEndMusic.removeFromCache();
       gameState = 0;
+      player.lives = 3;
+      player.setPosition(0, 0);
       imageMode(CORNER);
     }
   }

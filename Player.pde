@@ -146,7 +146,11 @@ class Player extends FBox {
     
     for (FContact contact: contactList) {
       if (contact.contains("Nink")) {
-        setPosition(0, 0);
+        if (!die.isPlaying()) {
+          die.play();
+        }
+        lives -=1;
+        addImpulse(0, -9000);
       }
       if (contact.contains("killbox")) {
         if (!die.isPlaying()) {
