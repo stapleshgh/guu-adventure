@@ -158,7 +158,11 @@ class Player extends FBox {
     ArrayList<FContact> contactList = getContacts();
     
     for (FContact contact: contactList) {
-      if (contact.contains("Nink") && !invincible) {
+      if (contact.contains("Nink") &&(getY() < contact.getY()) && !invincible) {
+        score += 1;
+        addImpulse(0, -11000);
+        invincible = true;
+      } else if (contact.contains("Nink") && !invincible) {
         if (!die.isPlaying()) {
           die.play();
         }

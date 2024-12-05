@@ -113,7 +113,6 @@ class Nink extends FBox {
       
       
       if (contact.contains("Player") && contact.getY() < getY()) {
-        
         world.remove(this);
       }
     }
