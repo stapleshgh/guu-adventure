@@ -3,7 +3,7 @@ class Star extends FBox{
   int frame = 0;
   
   
-  Star(int x, int y) {
+  Star(PApplet p, int x, int y) {
     
     super(100, 100);
     imageMode(CORNER);
@@ -31,5 +31,9 @@ class Star extends FBox{
 
     idle[frame].resize(100, 80);
     attachImage(idle[frame]);
+  }
+  
+  void updateStar() {
+    
   }
 }

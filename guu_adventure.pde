@@ -17,19 +17,18 @@ SoundFile gameMusic;
 //create player object ------------------------
 Player player;
 
-//create enemies ------------------------
+//create enemies list ------------------------
 ArrayList<Nink> ninks;
-Nink nink;
 
-//create platforms --------------------------
+//create platforms list --------------------------
 ArrayList<Platform> platforms;
-Platform platform;
+
+//create collectibles list -----------------------
+ArrayList<Star> stars;
 
 //killbox for void
 KillBox kb;
 
-//create stars
-Star star;
 
 void setup() {
   size(500, 500);
@@ -43,6 +42,8 @@ void setup() {
   
   //initialize entity arrays
   platforms = new ArrayList<Platform>();
+  ninks = new ArrayList<Nink>();
+  stars = new ArrayList<Star>();
 
   //load bad end assets
   badEnd = loadImage("badEnd.jpg");
@@ -63,7 +64,6 @@ void setup() {
   world.remove(world.right);
 
   //create platforms
-  platform = new Platform(400, 300, 200, 50);
   platforms.add(new Platform(-200, 400, 200, 50));
   platforms.add(new Platform(100, 400, 200, 50));
   platforms.add(new Platform(300, 400, 200, 50));
@@ -77,34 +77,41 @@ void setup() {
   //init void killbox
   kb = new KillBox(-1200, 1000, 24000, 50);
   
-
-  //init test nink ----------------------------------------------
-  nink = new Nink(this);
+  //create ninks
+  ninks.add(new Nink(this, 200, 200));
   
   //create player----------------------------------------------
   player = new Player(this);
   
   //create stars ---------------------------------------
-  star = new Star(900, 350);
+  stars.add(new Star(this, 100, 100));
 
   //music
   gameMusic = new SoundFile(this, "levelMusic.mp3");
 
   //add to world
-  world.add(nink);
   world.add(player);
-  world.add(star);
   world.add(kb);
   
+  //add all platforms to world
   for (Platform p : platforms) {
     world.add(p);
+  }
+  
+  //add all ninks to world
+  for (Nink n : ninks) {
+    world.add(n);
+  }
+  
+  //add all stars to world
+  for (Star s : stars) {
+    world.add(s);
   }
 }
 
 
 void draw() {
   background(255);
-  println(player.position);
 
   //menu screen
   if (gameState == 0) {
@@ -137,16 +144,26 @@ void draw() {
 
     popMatrix();
 
-    //draw world entities
-    nink.drawNink();
+    //draw and update player
     player.drawPlayer();
     player.updatePlayer();
-    star.drawStar();
     
+    //draw all platforms
     for (Platform p : platforms) {
       p.drawPlatform();
     }
 
+    //draw and update all ninks
+    for (Nink n : ninks) {
+      n.drawNink();
+      n.updateNink();
+    }
+    
+    //draw and update all stars
+    for (Star s : stars) {
+      s.drawStar();
+      s.updateStar();
+    }
     
     //music
     if (!gameMusic.isPlaying()) {

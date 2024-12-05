@@ -1,36 +1,72 @@
-class Nink extends FBox{
-  PImage ninkWalk[];
-  PImage ninkDie[];
+class Nink extends FBox {
+  PImage ninkWalkLeft[];
+  PImage ninkDieLeft[];
+  PImage ninkWalkRight[];
+  PImage ninkDieRight[];
   boolean isWalking;
   int frame;
   PVector position;
-  int direction = 1;
-  
-  Nink(PApplet p) {
+  int direction = 2;
+
+  Nink(PApplet p, int x, int y) {
     super(50, 90);
     frame = 0;
     imageMode(CORNER);
-    ninkWalk = new PImage[8];
-    setPosition(200, 200);
+    ninkWalkRight = new PImage[8];
+    ninkDieRight = new PImage[8];
+    ninkWalkLeft = new PImage[8];
+    ninkDieLeft = new PImage[8];
+    setPosition(x, y);
     setRotatable(false);
     setGrabbable(false);
     setName("Nink");
-    
-    
-    for (int i = 0; i < ninkWalk.length; i++) {
-      ninkWalk[i] = loadImage("ninkWalk (" + (i + 1) + ").png");
+
+
+    //load walkLeft array
+    for (int i = 0; i < ninkWalkLeft.length; i++) {
+      ninkWalkLeft[i] = loadImage("ninkWalk (" + (i + 1) + ").png");
+    }
+
+    //load dieLeft array (
+    for (int i = 0; i < ninkDieLeft.length; i++) {
+      ninkDieLeft[i] = loadImage("ninkWalk (" + (i + 8) + ").png");
     }
     
+    //load walkRight array (
+    for (int i = 0; i < ninkWalkRight.length; i++) {
+      ninkWalkRight[i] = loadImage("ninkWalk (" + (i + 17) + ").png");
+    }
+    
+    //load dieRight array (
+    for (int i = 0; i < ninkDieRight.length; i++) {
+      ninkDieRight[i] = loadImage("ninkWalk (" + (i + 8) + ").png");
+    }
     
   }
-  
+
   void drawNink() {
-    if (frameCount % 8 == 0) {
-      frame = (frame + 1) % ninkWalk.length;
+
+
+    //if moving left, display walk left animation
+    if (direction == 1) {
+      if (frameCount % 8 == 0) {
+        frame = (frame + 1) % ninkWalkLeft.length;
+      }
+      ninkWalkLeft[frame].resize(100, 100);
+      attachImage(ninkWalkLeft[frame]);
     }
-    
-    ninkWalk[frame].resize(100, 100);
-    attachImage(ninkWalk[frame]);
+
+  //if moving right, display walk right animation
+    if (direction == 2) {
+      if (frameCount % 8 == 0) {
+        frame = (frame + 1) % ninkWalkRight.length;
+      }
+
+
+      ninkWalkRight[frame].resize(100, 100);
+      attachImage(ninkWalkRight[frame]);
+    }
   }
-  
+  void updateNink() {
+  }
 }

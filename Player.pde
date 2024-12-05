@@ -23,6 +23,9 @@ class Player extends FBox {
   //player variables
   int lives = 3;
   int score = 0;
+  boolean invincible = false;
+  int timer = 0;
+  int time = 200;
 
   boolean isWalking;
   int frame;
@@ -71,7 +74,7 @@ class Player extends FBox {
 
   //draw function
   void drawPlayer() {
-
+    
     //movement + animation code
     if (right && getVelocityY() == 0) {
       //animation loop. changes frame every 4 frames
@@ -115,6 +118,15 @@ class Player extends FBox {
       addImpulse(0, -9000);
       fart.play();
     }
+    
+    //reset invincibility
+    if (invincible && timer < time) {
+      timer += 1;
+    } else if (invincible && timer >= time) {
+      invincible = false;
+      timer = 0;
+    }
+    
 
     //move right if key pressed
     if (right && getVelocityX() <= 500) {
@@ -145,12 +157,13 @@ class Player extends FBox {
     ArrayList<FContact> contactList = getContacts();
     
     for (FContact contact: contactList) {
-      if (contact.contains("Nink")) {
+      if (contact.contains("Nink") && !invincible) {
         if (!die.isPlaying()) {
           die.play();
         }
         lives -=1;
-        addImpulse(0, -9000);
+        addImpulse(0, -11000);
+        invincible = true;
       }
       if (contact.contains("killbox")) {
         if (!die.isPlaying()) {
