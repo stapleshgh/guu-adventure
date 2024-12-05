@@ -1,6 +1,7 @@
 class Star extends FBox{ 
   PImage idle[];
   int frame = 0;
+  boolean alive = true;
   
   
   Star(PApplet p, int x, int y) {
@@ -28,12 +29,27 @@ class Star extends FBox{
     if (frameCount % 8 == 0) {
       frame = (frame + 1) % idle.length;
     }
-
+    
+    
     idle[frame].resize(100, 80);
-    attachImage(idle[frame]);
+    
+    if (alive){
+      attachImage(idle[frame]);
+    }
   }
   
   void updateStar() {
+    checkContacts();
     
+  }
+  
+  void checkContacts() {
+    ArrayList<FContact> contactList = getContacts();
+    
+    for (FContact contact: contactList) {
+      if (contact.contains("Player")) {
+        alive = false;
+      }
+    }
   }
 }

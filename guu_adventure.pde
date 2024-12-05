@@ -23,6 +23,9 @@ ArrayList<Nink> ninks;
 //create platforms list --------------------------
 ArrayList<Platform> platforms;
 
+//create walls list
+ArrayList<Wall> walls;
+
 //create collectibles list -----------------------
 ArrayList<Star> stars;
 
@@ -39,9 +42,10 @@ void setup() {
   menu = loadImage("menuScreen.png");
   menuMusic = new SoundFile(this, "menuMusic.wav");
   menuMusic.amp(0.5);
-  
+
   //initialize entity arrays
   platforms = new ArrayList<Platform>();
+  walls = new ArrayList<Wall>();
   ninks = new ArrayList<Nink>();
   stars = new ArrayList<Star>();
 
@@ -53,10 +57,10 @@ void setup() {
   //fisica initialization --------------------------------
   Fisica.init(this);
 
-  
+
 
   //load world: initialize world properties --------------------------------------------
-  world = new FWorld(-2000, -2000, 2000, 2000);
+  world = new FWorld(-20000, -20000, 20000, 20000);
   world.setGravity(0, 900);
   //world.setEdges();
   //world.setEdgesFriction(20);
@@ -64,7 +68,8 @@ void setup() {
   world.remove(world.right);
 
   //create platforms
-  platforms.add(new Platform(-200, 400, 200, 50));
+  platforms.add(new Platform(-300, 400, 200, 50));
+  platforms.add(new Platform(-100, 400, 200, 50));
   platforms.add(new Platform(100, 400, 200, 50));
   platforms.add(new Platform(300, 400, 200, 50));
   platforms.add(new Platform(500, 400, 200, 50));
@@ -72,19 +77,31 @@ void setup() {
   platforms.add(new Platform(900, 400, 200, 50));
   platforms.add(new Platform(1100, 400, 200, 50));
   platforms.add(new Platform(1300, 400, 200, 50));
-  platforms.add(new Platform(1600, 200, 200, 50));
+  platforms.add(new Platform(1500, 200, 200, 50));
+  platforms.add(new Platform(1700, 0, 200, 50));
+  platforms.add(new Platform(1900, 200, 200, 50));
+  platforms.add(new Platform(2100, 200, 200, 50));
   
+  //create walls
+  
+  walls.add(new Wall(-400, 300, 50, 500));
+  walls.add(new Wall(-400, -200, 50, 500));
+  walls.add(new Wall(1400, 300, 50, 250));
+  walls.add(new Wall(1600, 100, 50, 250));
+  walls.add(new Wall(1800, 100, 50, 250));
+
   //init void killbox
   kb = new KillBox(-1200, 1000, 24000, 50);
-  
-  //create ninks
-  ninks.add(new Nink(this, 200, 200));
-  
+
   //create player----------------------------------------------
   player = new Player(this);
-  
+
+  //create ninks
+  ninks.add(new Nink(this, 900, 200));
+
   //create stars ---------------------------------------
-  stars.add(new Star(this, 100, 100));
+  stars.add(new Star(this, 100, 350));
+  stars.add(new Star(this, 300, 350));
 
   //music
   gameMusic = new SoundFile(this, "levelMusic.mp3");
@@ -92,17 +109,22 @@ void setup() {
   //add to world
   world.add(player);
   world.add(kb);
-  
+
   //add all platforms to world
   for (Platform p : platforms) {
     world.add(p);
   }
-  
+
+  //add all walls to world
+  for (Wall w : walls) {
+    world.add(w);
+  }
+
   //add all ninks to world
   for (Nink n : ninks) {
     world.add(n);
   }
-  
+
   //add all stars to world
   for (Star s : stars) {
     world.add(s);
@@ -135,7 +157,7 @@ void draw() {
   if (gameState == 1) {
     //check for game over
     checkGameOver();
-    
+
     //draw world
     pushMatrix();
     translate(-player.getX() + width / 2, -player.getY() + height / 2);
@@ -144,54 +166,86 @@ void draw() {
 
     popMatrix();
 
-    //draw and update player
-    player.drawPlayer();
-    player.updatePlayer();
-    
+
     //draw all platforms
     for (Platform p : platforms) {
       p.drawPlatform();
     }
+    
+    //draw all walls
+    for (Wall w : walls) {
+      w.drawWall();
+    }
 
     //draw and update all ninks
-    for (Nink n : ninks) {
+    for (int i = 0; i < ninks.size(); i++) {
+      Nink n = ninks.get(i);
       n.drawNink();
       n.updateNink();
+      
+      if (!n.alive) {
+        ninks.remove(n);
+        world.remove(n);
+      }
     }
-    
+
     //draw and update all stars
-    for (Star s : stars) {
-      s.drawStar();
-      s.updateStar();
+    for (int i = 0; i < stars.size(); i++) {
+      Star s = stars.get(i);
+      
+      if (!s.alive) { //<>//
+        stars.remove(i); 
+        world.remove(s);
+      } else {
+        s.drawStar();
+        s.updateStar();
+        
+      }
+      
+      
     }
-    
+
     //music
     if (!gameMusic.isPlaying()) {
       gameMusic.loop();
     }
+    
+    //draw and update player
+    player.drawPlayer();
+    player.updatePlayer();
+    
+    //draw score counter
+    fill(0);
+    textSize(20);
+    text("Score: " + str(player.score), 400, 20);
   }
 
 
   //you win! screen
   if (gameState == 2) {
-    println("win");
+
   }
 
   //you lose! screen
   if (gameState == 3) {
-    gameMusic.pause();
+    
+    
+    if (gameMusic.isPlaying()) {
+      gameMusic.pause(); }
+      
     imageMode(CENTER);
-    badEnd.resize(500,  500);
+    badEnd.resize(500, 500);
     image(badEnd, 250, 250);
     if (!badEndMusic.isPlaying()) {
       badEndMusic.loop();
     }
 
-    if (keyPressed) {
+    if (mousePressed) {
       badEndMusic.pause();
       gameState = 0;
       player.lives = 3;
-      player.setPosition(0, 0);
+      player.setPosition(100, 0);
+      player.setVelocity(0, 0);
       imageMode(CORNER);
     }
   }

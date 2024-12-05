@@ -25,7 +25,7 @@ class Player extends FBox {
   int score = 0;
   boolean invincible = false;
   int timer = 0;
-  int time = 200;
+  int time = 100;
 
   boolean isWalking;
   int frame;
@@ -51,6 +51,7 @@ class Player extends FBox {
     setRotatable(false);
     setGrabbable(false);
     setAllowSleeping(false);
+    setName("Player");
 
     //load animations
     for (int i = 0; i < guuWalkRight.length; i++) {
@@ -165,12 +166,17 @@ class Player extends FBox {
         addImpulse(0, -11000);
         invincible = true;
       }
-      if (contact.contains("killbox")) {
+      if (contact.contains("killbox") && !invincible) {
         if (!die.isPlaying()) {
           die.play();
         }
+        invincible = true;
         setPosition(0, 0);
         lives -=1;
+
+      }
+      if (contact.contains("Star")) {
+        score += 1;
       }
     }
   }

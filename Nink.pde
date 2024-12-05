@@ -5,8 +5,17 @@ class Nink extends FBox {
   PImage ninkDieRight[];
   boolean isWalking;
   int frame;
-  PVector position;
-  int direction = 2;
+  
+  //how the nink knows which sprites to display and which direction to go
+  boolean direction = false;
+  
+  //how the system knows to delete ninks
+  boolean alive = true;
+  
+  //cooldown variables for wall collisions
+  boolean invincible = false;
+  int time = 100;
+  int timer = 0;
 
   Nink(PApplet p, int x, int y) {
     super(50, 90);
@@ -48,7 +57,7 @@ class Nink extends FBox {
 
 
     //if moving left, display walk left animation
-    if (direction == 1) {
+    if (direction) {
       if (frameCount % 8 == 0) {
         frame = (frame + 1) % ninkWalkLeft.length;
       }
@@ -57,7 +66,7 @@ class Nink extends FBox {
     }
 
   //if moving right, display walk right animation
-    if (direction == 2) {
+    if (!direction) {
       if (frameCount % 8 == 0) {
         frame = (frame + 1) % ninkWalkRight.length;
       }
@@ -68,5 +77,48 @@ class Nink extends FBox {
     }
   }
   void updateNink() {
+    println(timer, time);
+    //figuring out direction to move
+    if (direction) {
+      setVelocity(-100, getVelocityY());
+    } else {
+      setVelocity(100, getVelocityY());
+    }
+    
+    
+    //check for contacts
+    checkContacts();
+    
+    if (invincible & time >= timer) {
+      timer += 1;
+    } else if (time < timer) {
+      timer = 0;
+      invincible = false;
+    }
+    
+  }
+  
+  void checkContacts() {
+    ArrayList<FContact> contactList = getContacts();
+    
+    for (FContact contact: contactList) {
+      if (contact.contains("Wall") && !invincible) {
+        direction = !direction;
+        invincible = true;
+        
+      }
+      if (contact.contains("killbox")) {
+        world.remove(this);
+      }
+      
+      
+      if (contact.contains("Player") && contact.getY() < getY()) {
+        
+        world.remove(this);
+      }
+    }
+    
+    
+     
   }
 }
