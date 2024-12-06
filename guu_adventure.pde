@@ -247,13 +247,6 @@ void draw() {
     player.drawPlayer();
     player.updatePlayer();
 
-    //check ifplayer has won
-
-    if (player.win) {
-      gameState = 2;
-      player.walk.pause();
-      gameMusic.pause();
-    }
 
     //draw score counter
     fill(0);
@@ -264,6 +257,17 @@ void draw() {
 
   //you win! screen
   if (gameState == 2) {
+    
+    //pause existing music
+    if (player.walk.isPlaying()) {
+      player.walk.pause();
+    }
+    
+    if (gameMusic.isPlaying()) {
+      gameMusic.pause();
+    }
+    
+    //display endscreen, play end music
     if (!goodEndMusic.isPlaying()) {
       goodEndMusic.play();
     }
@@ -275,11 +279,12 @@ void draw() {
   //you lose! screen
   if (gameState == 3) {
 
-
+    //pause game music
     if (gameMusic.isPlaying()) {
       gameMusic.pause();
     }
-
+    
+    //display bad end screen, play bad end music
     imageMode(CENTER);
     badEnd.resize(500, 500);
     image(badEnd, 250, 250);
@@ -287,6 +292,7 @@ void draw() {
       badEndMusic.loop();
     }
 
+    //if mouse pressed, respawn player (but don't reset level)
     if (mousePressed) {
       badEndMusic.pause();
       gameState = 0;
@@ -299,7 +305,12 @@ void draw() {
 }
 
 void checkGameOver() {
+  //check for either a loss or a win
+  
   if (player.lives <= 0) {
     gameState = 3;
+  }
+  if (player.win) {
+    gameState = 2;
   }
 }
