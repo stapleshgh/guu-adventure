@@ -14,21 +14,27 @@ class Nink extends FBox {
   
   //cooldown variables for wall collisions
   boolean invincible = false;
-  int time = 100;
+  int time = 200;
   int timer = 0;
 
-  Nink(PApplet p, int x, int y) {
+  Nink(PApplet p, int x, int y, boolean dir) {
     super(50, 90);
     frame = 0;
     imageMode(CORNER);
+    
+    //image array init
     ninkWalkRight = new PImage[8];
     ninkDieRight = new PImage[8];
     ninkWalkLeft = new PImage[8];
     ninkDieLeft = new PImage[8];
+    
+    //set properties
     setPosition(x, y);
     setRotatable(false);
     setGrabbable(false);
     setName("Nink");
+    
+    direction = dir;
 
 
     //load walkLeft array
@@ -77,7 +83,6 @@ class Nink extends FBox {
     }
   }
   void updateNink() {
-    println(timer, time);
     //figuring out direction to move
     if (direction) {
       setVelocity(-100, getVelocityY());

@@ -26,6 +26,7 @@ class Player extends FBox {
   boolean invincible = false;
   int timer = 0;
   int time = 100;
+  boolean win = false;
 
   boolean isWalking;
   int frame;
@@ -33,7 +34,7 @@ class Player extends FBox {
 
   Player(PApplet p) {
     //invoke parent constructor
-    super(50, 100);
+    super(50, 90);
     imageMode(CORNER);
 
     //sound effects init
@@ -157,12 +158,14 @@ class Player extends FBox {
   void checkContacts() {
     ArrayList<FContact> contactList = getContacts();
     
+    //jump on enemies code
     for (FContact contact: contactList) {
       if (contact.contains("Nink") &&(getY() < contact.getY()) && !invincible) {
         score += 1;
         addImpulse(0, -11000);
         invincible = true;
       } else if (contact.contains("Nink") && !invincible) {
+        //get hurt code
         if (!die.isPlaying()) {
           die.play();
         }
@@ -170,6 +173,8 @@ class Player extends FBox {
         addImpulse(0, -11000);
         invincible = true;
       }
+      
+      //die from void code
       if (contact.contains("killbox") && !invincible) {
         if (!die.isPlaying()) {
           die.play();
@@ -179,6 +184,12 @@ class Player extends FBox {
         lives -=1;
 
       }
+      
+      //win code
+      if (contact.contains("winbox")) {
+        win = true;
+      }
+      //collectible code
       if (contact.contains("Star")) {
         score += 1;
       }
